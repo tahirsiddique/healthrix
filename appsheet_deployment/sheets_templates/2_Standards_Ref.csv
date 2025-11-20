@@ -1,0 +1,11 @@
+Task_ID,Task_Name,EC_Category,Base_Score,Target_Daily,Description
+TSK001,Authorization Created,EC-1,45,10,Create new prior authorization
+TSK002,Authorization Status/FU,EC-1,25,15,Follow-up on authorization status
+TSK003,Appeal,EC-1,10,5,Process authorization appeal
+TSK004,Eligibility Check,EC-2,20,25,Verify patient insurance eligibility
+TSK005,Medication Refill,EC-2,20,30,Process medication refill request
+TSK006,Pharmacy Call,EC-2,10,10,Outbound call to pharmacy
+TSK007,Document Upload,EC-5,10,2,Upload patient documents
+TSK008,Patient Outreach,EC-3,15,20,Contact patient for information
+TSK009,Insurance Verification,EC-2,25,15,Verify insurance coverage details
+TSK010,Claims Processing,EC-4,30,12,Process insurance claim

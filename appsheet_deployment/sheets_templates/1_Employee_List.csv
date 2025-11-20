@@ -1,0 +1,6 @@
+Emp_ID,Name,Department,Role,Email,Hire_Date,Status
+EMP001,M. Zeeshan,Operations,Authorization Specialist,m.zeeshan@healthrix.com,2024-01-15,Active
+EMP002,Waqas Anwar,Operations,Eligibility Coordinator,w.anwar@healthrix.com,2024-02-01,Active
+EMP003,Sarah Johnson,Operations,Patient Care Coordinator,s.johnson@healthrix.com,2024-01-20,Active
+EMP004,Ahmed Hassan,Operations,Authorization Specialist,a.hassan@healthrix.com,2024-03-10,Active
+EMP005,Emily Chen,Operations,Pharmacy Liaison,e.chen@healthrix.com,2024-02-15,Active
