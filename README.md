@@ -319,23 +319,38 @@ This is the **recommended starting point** for most teams.
 This is the **recommended option for teams needing scalability, custom branding, and advanced features**.
 
 **What You Get:**
-- RESTful API with FastAPI (Python)
-- PostgreSQL database
-- JWT authentication with role-based access
-- Docker deployment (production-ready)
-- Swagger/OpenAPI documentation
-- React frontend starter templates
-- Horizontal scalability
-- Advanced performance analytics
+- **RESTful API** with FastAPI (Python)
+- **PostgreSQL database** with normalized schema
+- **Advanced RBAC**: 5-tier role hierarchy (Super Admin, Admin, HR, Department Head, Employee)
+- **Granular Permissions**: 30+ permission types for fine-grained access control
+- **Department Management**: Hierarchical organization structure
+- **Complete User Management**: CRUD operations with role-based restrictions
+- **JWT authentication** with access and refresh tokens
+- **Docker deployment** (production-ready)
+- **Ubuntu Server 24.04** deployment with automated setup scripts
+- **Swagger/OpenAPI documentation**
+- **React frontend** starter templates
+- **Horizontal scalability**
+- **Advanced performance analytics**
 
 **Quick Start:**
+
+**Option A: Docker (Fastest)**
 1. Go to `phase2_webapp/` directory
 2. Run `docker-compose up -d`
 3. API available at `http://localhost:8000`
 4. Swagger docs at `http://localhost:8000/docs`
 
+**Option B: Ubuntu Server 24.04 (Production)**
+1. Go to `phase2_webapp/deployment/ubuntu/`
+2. Run `sudo ./setup.sh` for automated installation
+3. API available at `http://your-server-ip/api/v1`
+4. Default admin: `admin@healthrix.local` / `Admin@123`
+
 **Documentation:**
 - **Main README:** [`phase2_webapp/README.md`](phase2_webapp/README.md)
+- **Ubuntu Deployment:** [`phase2_webapp/deployment/ubuntu/UBUNTU_DEPLOYMENT.md`](phase2_webapp/deployment/ubuntu/UBUNTU_DEPLOYMENT.md)
+- **User Management:** [`phase2_webapp/docs/USER_MANAGEMENT.md`](phase2_webapp/docs/USER_MANAGEMENT.md)
 - **API Documentation:** http://localhost:8000/docs (after starting)
 - **Frontend Guide:** [`phase2_webapp/frontend/README.md`](phase2_webapp/frontend/README.md)
 
@@ -350,18 +365,22 @@ This is the **recommended option for teams needing scalability, custom branding,
 - ✅ **Security**: Bcrypt password hashing, CORS, SQL injection protection
 
 **API Endpoints:**
-- Authentication (`/api/v1/auth/*`)
-- Activities CRUD (`/api/v1/activities/*`)
-- Performance calculation (`/api/v1/performance/*`)
-- Leaderboards & Analytics
-- Trend analysis
+- **Authentication** (`/api/v1/auth/*`) - Login, token refresh
+- **User Management** (`/api/v1/users/*`) - Complete CRUD with role-based access
+- **Department Management** (`/api/v1/departments/*`) - Organization hierarchy
+- **Activities CRUD** (`/api/v1/activities/*`) - Daily activity logging
+- **Performance Calculation** (`/api/v1/performance/*`) - 90/10 formula implementation
+- **Leaderboards & Analytics** - Real-time rankings
+- **Trend Analysis** - Historical performance tracking
 
 **Deployment Options:**
-- Docker Compose (development & small teams)
-- AWS (ECS, Elastic Beanstalk)
-- Heroku (one-click deploy)
-- DigitalOcean App Platform
-- Azure Container Instances
+- **Ubuntu Server 24.04** (recommended for production) - Automated setup script
+- **Docker Compose** (development & small teams)
+- **AWS** (ECS, Elastic Beanstalk)
+- **Heroku** (one-click deploy)
+- **DigitalOcean** App Platform
+- **Azure** Container Instances
+- **Systemd Service** (native Linux deployment)
 
 **Migration Path from Phase 1:**
 - Export data from Google Sheets (CSV)

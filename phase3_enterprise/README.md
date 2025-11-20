@@ -10,12 +10,15 @@ Phase 3 adds enterprise-grade capabilities to the Healthrix Productivity System,
 
 ## New Capabilities
 
-### 1. **Advanced Authentication & SSO**
-- OAuth2/OpenID Connect integration
-- SAML 2.0 support for enterprise SSO
-- Multi-factor authentication (MFA)
-- Active Directory / LDAP integration
-- Social login (Google, Microsoft, GitHub)
+### 1. **Advanced Authentication & RBAC**
+- **Enhanced Role Hierarchy**: 5-tier role system (Super Admin, Admin, HR, Department Head, Employee)
+- **Granular Permissions**: 30+ permission types with role-based access control
+- **OAuth2/OpenID Connect integration**
+- **SAML 2.0 support** for enterprise SSO
+- **Multi-factor authentication (MFA)**
+- **Active Directory / LDAP integration**
+- **Social login** (Google, Microsoft, GitHub)
+- **Department-based access control**
 
 ### 2. **Multi-Tenant Architecture**
 - Organization-level data isolation
