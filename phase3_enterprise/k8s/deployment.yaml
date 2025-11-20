@@ -1,0 +1,417 @@
+---
+# Healthrix API Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: healthrix-api
+  namespace: healthrix
+  labels:
+    app: healthrix
+    component: api
+    version: v3.0
+spec:
+  replicas: 3
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  selector:
+    matchLabels:
+      app: healthrix
+      component: api
+  template:
+    metadata:
+      labels:
+        app: healthrix
+        component: api
+        version: v3.0
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8000"
+        prometheus.io/path: "/metrics"
+    spec:
+      serviceAccountName: healthrix-api
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        fsGroup: 1000
+
+      containers:
+      - name: api
+        image: healthrix/api:v3.0
+        imagePullPolicy: IfNotPresent
+
+        ports:
+        - name: http
+          containerPort: 8000
+          protocol: TCP
+
+        env:
+        - name: DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: healthrix-secrets
+              key: database-url
+
+        - name: SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              name: healthrix-secrets
+              key: secret-key
+
+        - name: REDIS_URL
+          value: "redis://healthrix-redis:6379"
+
+        - name: RABBITMQ_URL
+          valueFrom:
+            secretKeyRef:
+              name: healthrix-secrets
+              key: rabbitmq-url
+
+        - name: ENABLE_MULTI_TENANT
+          valueFrom:
+            configMapKeyRef:
+              name: healthrix-config
+              key: enable-multi-tenant
+
+        - name: PROMETHEUS_ENABLED
+          value: "true"
+
+        - name: SENTRY_DSN
+          valueFrom:
+            secretKeyRef:
+              name: healthrix-secrets
+              key: sentry-dsn
+              optional: true
+
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "250m"
+          limits:
+            memory: "1Gi"
+            cpu: "1000m"
+
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: http
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: http
+          initialDelaySeconds: 10
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 3
+
+        volumeMounts:
+        - name: config
+          mountPath: /app/config
+          readOnly: true
+
+      volumes:
+      - name: config
+        configMap:
+          name: healthrix-config
+
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                  - healthrix
+                - key: component
+                  operator: In
+                  values:
+                  - api
+              topologyKey: kubernetes.io/hostname
+
+---
+# Horizontal Pod Autoscaler
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: healthrix-api-hpa
+  namespace: healthrix
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: healthrix-api
+  minReplicas: 3
+  maxReplicas: 50
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 70
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: Utilization
+        averageUtilization: 80
+  behavior:
+    scaleDown:
+      stabilizationWindowSeconds: 300
+      policies:
+      - type: Percent
+        value: 50
+        periodSeconds: 60
+    scaleUp:
+      stabilizationWindowSeconds: 60
+      policies:
+      - type: Percent
+        value: 100
+        periodSeconds: 30
+      - type: Pods
+        value: 2
+        periodSeconds: 30
+      selectPolicy: Max
+
+---
+# Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: healthrix-api
+  namespace: healthrix
+  labels:
+    app: healthrix
+    component: api
+spec:
+  type: ClusterIP
+  ports:
+  - port: 80
+    targetPort: http
+    protocol: TCP
+    name: http
+  selector:
+    app: healthrix
+    component: api
+
+---
+# Service Account
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: healthrix-api
+  namespace: healthrix
+
+---
+# PostgreSQL StatefulSet
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: healthrix-postgres
+  namespace: healthrix
+spec:
+  serviceName: healthrix-postgres
+  replicas: 1
+  selector:
+    matchLabels:
+      app: healthrix
+      component: postgres
+  template:
+    metadata:
+      labels:
+        app: healthrix
+        component: postgres
+    spec:
+      containers:
+      - name: postgres
+        image: postgres:15-alpine
+        ports:
+        - containerPort: 5432
+          name: postgres
+        env:
+        - name: POSTGRES_DB
+          value: healthrix
+        - name: POSTGRES_USER
+          valueFrom:
+            secretKeyRef:
+              name: healthrix-secrets
+              key: postgres-user
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: healthrix-secrets
+              key: postgres-password
+        - name: PGDATA
+          value: /var/lib/postgresql/data/pgdata
+        volumeMounts:
+        - name: postgres-storage
+          mountPath: /var/lib/postgresql/data
+        resources:
+          requests:
+            memory: "1Gi"
+            cpu: "500m"
+          limits:
+            memory: "4Gi"
+            cpu: "2000m"
+        livenessProbe:
+          exec:
+            command:
+            - sh
+            - -c
+            - pg_isready -U healthrix
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          exec:
+            command:
+            - sh
+            - -c
+            - pg_isready -U healthrix
+          initialDelaySeconds: 5
+          periodSeconds: 5
+  volumeClaimTemplates:
+  - metadata:
+      name: postgres-storage
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      storageClassName: standard
+      resources:
+        requests:
+          storage: 100Gi
+
+---
+# PostgreSQL Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: healthrix-postgres
+  namespace: healthrix
+spec:
+  ports:
+  - port: 5432
+    name: postgres
+  clusterIP: None
+  selector:
+    app: healthrix
+    component: postgres
+
+---
+# Redis Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: healthrix-redis
+  namespace: healthrix
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: healthrix
+      component: redis
+  template:
+    metadata:
+      labels:
+        app: healthrix
+        component: redis
+    spec:
+      containers:
+      - name: redis
+        image: redis:7-alpine
+        ports:
+        - containerPort: 6379
+          name: redis
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "100m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+        livenessProbe:
+          tcpSocket:
+            port: redis
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          tcpSocket:
+            port: redis
+          initialDelaySeconds: 5
+          periodSeconds: 5
+
+---
+# Redis Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: healthrix-redis
+  namespace: healthrix
+spec:
+  ports:
+  - port: 6379
+    name: redis
+  selector:
+    app: healthrix
+    component: redis
+
+---
+# Ingress
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: healthrix-ingress
+  namespace: healthrix
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/proxy-body-size: "10m"
+    nginx.ingress.kubernetes.io/rate-limit: "100"
+spec:
+  tls:
+  - hosts:
+    - api.healthrix.example.com
+    secretName: healthrix-tls
+  rules:
+  - host: api.healthrix.example.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: healthrix-api
+            port:
+              number: 80
+
+---
+# ConfigMap
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: healthrix-config
+  namespace: healthrix
+data:
+  enable-multi-tenant: "true"
+  daily-target-points: "400"
+  productivity-weight: "0.90"
+  behavior-weight: "0.10"
+
+---
+# Namespace
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: healthrix
+  labels:
+    name: healthrix
+    environment: production

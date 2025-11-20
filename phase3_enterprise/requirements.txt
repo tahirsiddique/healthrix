@@ -1,0 +1,47 @@
+# Phase 3 Enterprise Features - Additional Requirements
+
+# OAuth2/OIDC
+authlib==1.2.1
+httpx==0.25.2
+
+# Machine Learning
+scikit-learn==1.3.2
+tensorflow==2.15.0  # For LSTM models
+xgboost==2.0.3
+joblib==1.3.2
+
+# Monitoring
+prometheus-client==0.19.0
+opentelemetry-api==1.21.0
+opentelemetry-sdk==1.21.0
+opentelemetry-instrumentation-fastapi==0.42b0
+sentry-sdk[fastapi]==1.39.1
+
+# WebSocket & Real-time
+redis[hiredis]==5.0.1
+websockets==12.0
+
+# Notifications
+jinja2==3.1.2
+aiosmtplib==3.0.1
+twilio==8.11.0  # For SMS notifications
+
+# Message Queue
+celery[redis]==5.3.4
+kombu==5.3.4
+
+# GraphQL (for mobile API)
+strawberry-graphql[fastapi]==0.215.1
+
+# Additional utilities
+python-multipart==0.0.6
+aiofiles==23.2.1
+
+# Kubernetes client (for advanced deployments)
+kubernetes==28.1.0
+
+# Helm (Python SDK)
+python-helm==0.1.0
+
+# All Phase 2 requirements
+-r ../phase2_webapp/backend/requirements.txt
