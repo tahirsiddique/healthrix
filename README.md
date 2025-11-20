@@ -194,7 +194,7 @@ healthrix/
 │       ├── __init__.py
 │       └── helpers.py            # Helper functions
 │
-├── appsheet_deployment/           # Phase 1: AppSheet Deployment ⭐ NEW
+├── appsheet_deployment/           # Phase 1: AppSheet Deployment
 │   ├── README.md                  # AppSheet deployment overview
 │   ├── PHASE1_DEPLOYMENT_GUIDE.md # Complete step-by-step guide
 │   ├── QUICK_REFERENCE.md         # User quick reference card
@@ -210,6 +210,24 @@ healthrix/
 │   └── apps_script/               # Google Apps Script
 │       └── PerformanceCalculator.gs  # Automated calculations
 │
+├── phase2_webapp/                 # Phase 2: Web Application ⭐ NEW
+│   ├── README.md                  # Phase 2 deployment guide
+│   ├── docker-compose.yml         # Docker orchestration
+│   ├── backend/                   # FastAPI backend
+│   │   ├── app/
+│   │   │   ├── api/v1/           # API endpoints
+│   │   │   ├── core/             # Config & security
+│   │   │   ├── models/           # SQLAlchemy models
+│   │   │   ├── schemas/          # Pydantic schemas
+│   │   │   ├── services/         # Business logic
+│   │   │   ├── db/               # Database setup
+│   │   │   └── main.py           # FastAPI app
+│   │   ├── Dockerfile
+│   │   ├── requirements.txt
+│   │   └── .env.example
+│   └── frontend/                  # React frontend starter
+│       └── README.md
+│
 ├── data/                          # Sample data for Python POC
 │   ├── sample_employees.csv
 │   └── sample_activities.csv
@@ -220,7 +238,7 @@ healthrix/
 │
 ├── tests/                         # Unit tests
 ├── output/                        # Generated reports (created at runtime)
-├── requirements.txt               # Python dependencies
+├── requirements.txt               # Python POC dependencies
 └── README.md                      # This file
 ```
 
@@ -268,30 +286,77 @@ This is the **recommended starting point** for most teams.
 - ✅ User training materials
 - ✅ Troubleshooting guide
 
-### Phase 2: Web Application (Scalable)
+### Phase 2: Web Application (Production-Ready) ⭐ READY TO DEPLOY
 
-**Option A: Streamlit (Rapid Prototyping)**
-```python
-# streamlit_app.py
-import streamlit as st
-from healthrix_automation import *
+**Status:** ✅ **Complete FastAPI backend with PostgreSQL - Ready for production**
 
-st.title("Healthrix Performance Dashboard")
-# ... build interface
-```
+**Time to Deploy:** 30 minutes (with Docker)
+**Cost:** $10-50/month (cloud hosting)
+**Technical Level:** Intermediate (Docker knowledge helpful)
 
-**Option B: Django/FastAPI (Production)**
-- RESTful API for activity logging
+This is the **recommended option for teams needing scalability, custom branding, and advanced features**.
+
+**What You Get:**
+- RESTful API with FastAPI (Python)
 - PostgreSQL database
-- React/Vue.js frontend
-- Scheduled jobs for daily calculations
+- JWT authentication with role-based access
+- Docker deployment (production-ready)
+- Swagger/OpenAPI documentation
+- React frontend starter templates
+- Horizontal scalability
+- Advanced performance analytics
 
-### Phase 3: Enterprise Integration
+**Quick Start:**
+1. Go to `phase2_webapp/` directory
+2. Run `docker-compose up -d`
+3. API available at `http://localhost:8000`
+4. Swagger docs at `http://localhost:8000/docs`
 
-- Single Sign-On (SSO)
-- Role-based access control
-- Multi-tenant support
-- Advanced analytics and ML predictions
+**Documentation:**
+- **Main README:** [`phase2_webapp/README.md`](phase2_webapp/README.md)
+- **API Documentation:** http://localhost:8000/docs (after starting)
+- **Frontend Guide:** [`phase2_webapp/frontend/README.md`](phase2_webapp/frontend/README.md)
+
+**Technical Stack:**
+- ✅ **Backend**: FastAPI 0.104+ (Python 3.11)
+- ✅ **Database**: PostgreSQL 15
+- ✅ **Auth**: JWT tokens with role-based access
+- ✅ **API Docs**: Auto-generated Swagger/ReDoc
+- ✅ **Deployment**: Docker + docker-compose
+- ✅ **Frontend**: React starter templates
+- ✅ **Testing**: pytest with coverage
+- ✅ **Security**: Bcrypt password hashing, CORS, SQL injection protection
+
+**API Endpoints:**
+- Authentication (`/api/v1/auth/*`)
+- Activities CRUD (`/api/v1/activities/*`)
+- Performance calculation (`/api/v1/performance/*`)
+- Leaderboards & Analytics
+- Trend analysis
+
+**Deployment Options:**
+- Docker Compose (development & small teams)
+- AWS (ECS, Elastic Beanstalk)
+- Heroku (one-click deploy)
+- DigitalOcean App Platform
+- Azure Container Instances
+
+**Migration Path from Phase 1:**
+- Export data from Google Sheets (CSV)
+- Import to PostgreSQL (migration scripts provided)
+- Seamless transition with data integrity
+
+### Phase 3: Enterprise Features (Future)
+
+When you need advanced capabilities:
+
+- **Single Sign-On (SSO)**: SAML, OAuth2, Active Directory
+- **Multi-tenant Support**: Multiple organizations in one instance
+- **Advanced Analytics**: ML-powered predictions, anomaly detection
+- **Mobile Apps**: React Native iOS/Android apps
+- **Integrations**: Payroll systems, HR platforms, Slack/Teams notifications
+- **Custom Reporting**: Build-your-own dashboard
+- **Real-time Updates**: WebSocket support for live data
 
 ## Sample Output
 
