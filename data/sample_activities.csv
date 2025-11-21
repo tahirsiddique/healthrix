@@ -1,0 +1,21 @@
+Date,Emp_ID,Name,Task,Count,Patient_ID,Duration_Minutes,Idle_Hours,Conduct_Flag,Notes
+2025-11-03,EMP001,M. Zeeshan,Authorization Created,8,PT001,240,0.5,0,Excellent productivity
+2025-11-03,EMP001,M. Zeeshan,Appeal,2,PT002,60,0.5,0,
+2025-11-03,EMP002,Waqas Anwar,Eligibility Check,20,PT003,180,1.0,0,Above target
+2025-11-03,EMP002,Waqas Anwar,Document Upload,5,PT004,30,1.0,0,
+2025-11-03,EMP003,Sarah Johnson,Patient Outreach,15,PT005,120,2.0,0,
+2025-11-03,EMP003,Sarah Johnson,Pharmacy Call,8,PT006,40,2.0,0,
+2025-11-03,EMP004,Ahmed Hassan,Authorization Created,5,PT007,150,2.5,1,Conduct issue reported
+2025-11-03,EMP004,Ahmed Hassan,Authorization Status/FU,3,PT008,45,2.5,1,
+2025-11-03,EMP005,Emily Chen,Pharmacy Call,25,PT009,200,0.0,0,Exceptional performance
+2025-11-03,EMP005,Emily Chen,Medication Refill,18,PT010,120,0.0,0,
+2025-11-04,EMP001,M. Zeeshan,Authorization Created,9,PT011,270,0.3,0,
+2025-11-04,EMP001,M. Zeeshan,Insurance Verification,5,PT012,75,0.3,0,
+2025-11-04,EMP002,Waqas Anwar,Eligibility Check,22,PT013,190,0.8,0,
+2025-11-04,EMP002,Waqas Anwar,Document Upload,4,PT014,25,0.8,0,
+2025-11-04,EMP003,Sarah Johnson,Patient Outreach,18,PT015,135,1.5,0,
+2025-11-04,EMP003,Sarah Johnson,Claims Processing,3,PT016,90,1.5,0,
+2025-11-04,EMP004,Ahmed Hassan,Authorization Created,7,PT017,210,1.8,0,Improved from yesterday
+2025-11-04,EMP004,Ahmed Hassan,Appeal,4,PT018,40,1.8,0,
+2025-11-04,EMP005,Emily Chen,Pharmacy Call,28,PT019,220,0.2,0,
+2025-11-04,EMP005,Emily Chen,Medication Refill,20,PT020,130,0.2,0,

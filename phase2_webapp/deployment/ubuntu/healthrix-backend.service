@@ -1,0 +1,50 @@
+[Unit]
+Description=Healthrix Productivity System Backend API
+After=network.target postgresql.service redis-server.service
+Requires=postgresql.service
+Documentation=https://github.com/yourusername/healthrix
+
+[Service]
+Type=notify
+User=healthrix
+Group=healthrix
+WorkingDirectory=/opt/healthrix/backend
+Environment="PATH=/opt/healthrix/backend/venv/bin"
+EnvironmentFile=/opt/healthrix/backend/.env
+
+# Main process
+ExecStart=/opt/healthrix/backend/venv/bin/uvicorn app.main:app \
+    --host ${HOST:-0.0.0.0} \
+    --port ${PORT:-8000} \
+    --workers ${WORKERS:-4} \
+    --log-level ${LOG_LEVEL:-info}
+
+# Process management
+Restart=always
+RestartSec=10
+KillMode=mixed
+KillSignal=SIGTERM
+TimeoutStopSec=30
+
+# Security settings
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/opt/healthrix
+ProtectKernelTunables=true
+ProtectControlGroups=true
+RestrictRealtime=true
+RestrictNamespaces=true
+
+# Resource limits
+LimitNOFILE=65536
+LimitNPROC=512
+
+# Logging
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=healthrix-backend
+
+[Install]
+WantedBy=multi-user.target
